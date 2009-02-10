@@ -31,9 +31,16 @@ static void
 cfg_pentry(struct pc_partition *pentry, uint8_t status, uint8_t type,
            uint32_t start, uint32_t len)
 {
-    /* zero out the c/h/s entries.. they are not used */
-    memset(&pentry->start, 0, sizeof(struct chs));
-    memset(&pentry->end, 0, sizeof(struct chs));
+    if (len > 0) {
+        /* seems that somes BIOSens can get wedged on boot while verifying
+         * the mbr if these are 0 */
+        memset(&pentry->start, 0xff, sizeof(struct chs));
+        memset(&pentry->end, 0xff, sizeof(struct chs));
+    } else {
+        /* zero out the c/h/s entries.. they are not used */
+        memset(&pentry->start, 0, sizeof(struct chs));
+        memset(&pentry->end, 0, sizeof(struct chs));
+    }
 
     pentry->status = status;
     pentry->type = type;

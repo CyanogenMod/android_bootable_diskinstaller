@@ -48,10 +48,10 @@
 #define PART_ACTIVE_FLAG             0x1
 
 struct chs {
-    uint8_t cylinder;
     uint8_t head;
     uint8_t sector;
-};
+    uint8_t cylinder;
+} __attribute__((__packed__));
 
 /* 16 byte pc partition descriptor that sits in MBR and EPBR.
  * Note: multi-byte entities have little-endian layout on disk */
