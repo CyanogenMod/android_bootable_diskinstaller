@@ -61,7 +61,7 @@ parse_args(int argc, char *argv[], struct disk_info **dinfo, int *test,
     int x;
     int update_lba = 0;
 
-    while ((x = getopt (argc, argv, "thl:i:")) != EOF) {
+    while ((x = getopt (argc, argv, "vthl:i:")) != EOF) {
         switch (x) {
             case 'h':
                 return usage();
