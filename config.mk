@@ -119,9 +119,9 @@ internal_installerimage_args := \
 internal_installerimage_files := \
 	$(filter-out --%,$(internal_installerimage_args))
 
-BOARD_KERNEL_CMDLINE := $(strip $(BOARD_KERNEL_CMDLINE))
-ifdef BOARD_KERNEL_CMDLINE
-  internal_installerimage_args += --cmdline "$(BOARD_KERNEL_CMDLINE)"
+BOARD_INSTALLER_CMDLINE := $(strip $(BOARD_INSTALLER_CMDLINE))
+ifdef BOARD_INSTALLER_CMDLINE
+  internal_installerimage_args += --cmdline "$(BOARD_INSTALLER_CMDLINE)"
 endif
 
 installer_tmp_img := $(TARGET_INSTALLER_OUT)/installer_tmp.img
@@ -182,10 +182,27 @@ $(INSTALLED_DISKINSTALLERIMAGE_TARGET): \
 		inst_data=$(installer_data_img)
 	@echo "Done with bootable installer image -[ $@ ]-"
 
+
+######################################################################
+# now convert the installer_img (disk image) to a VirtualBox image
+
+INSTALLED_VBOXINSTALLERIMAGE_TARGET := $(PRODUCT_OUT)/installer.vdi
+virtual_box_manager := VBoxManage
+virtual_box_manager_options := convertfromraw
+
+$(INSTALLED_VBOXINSTALLERIMAGE_TARGET): $(INSTALLED_DISKINSTALLERIMAGE_TARGET)
+	@rm -f $(INSTALLED_VBOXINSTALLERIMAGE_TARGET)
+	@$(virtual_box_manager) $(virtual_box_manager_options) $(INSTALLED_DISKINSTALLERIMAGE_TARGET) $(INSTALLED_VBOXINSTALLERIMAGE_TARGET)
+	@echo "Done with VirtualBox bootable installer image -[ $@ ]-"
+
 else  # ! TARGET_USE_DISKINSTALLER
 INSTALLED_DISKINSTALLERIMAGE_TARGET :=
+INSTALLED_VBOXINSTALLERIMAGE_TARGET :=
 endif
 endif # TARGET_ARCH == x86
 
 .PHONY: installer_img
 installer_img: $(INSTALLED_DISKINSTALLERIMAGE_TARGET)
+
+.PHONY: installer_vdi
+installer_vdi: $(INSTALLED_VBOXINSTALLERIMAGE_TARGET)

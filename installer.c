@@ -457,8 +457,10 @@ main(int argc, char *argv[])
     }
 
     for (img = images->first_child; img; img = img->next) {
-        if (process_image_node(img, device_disk_info, test))
+        if (process_image_node(img, device_disk_info, test)) {
+            LOGE("Unable to write data to partition. Try running 'installer' again.");
             return 1;
+        }
         ++cnt;
     }
 
@@ -473,5 +475,6 @@ main(int argc, char *argv[])
         return 1;
 
     LOGI("Done processing installer config. Configured %d images", cnt);
+    LOGI("Type 'reboot' or reset to run new image");
     return 0;
 }
