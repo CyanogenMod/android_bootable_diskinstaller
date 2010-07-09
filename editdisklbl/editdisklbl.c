@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "diskconfig.h"
+#include "diskconfig/diskconfig.h"
 
 /* give us some room */
 #define EXTRA_LBAS      100
