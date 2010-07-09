@@ -33,7 +33,7 @@
 #include <cutils/config_utils.h>
 #include <cutils/log.h>
 
-#include "diskconfig.h"
+#include "diskconfig/diskconfig.h"
 #include "installer.h"
 
 #define MKE2FS_BIN     "/system/bin/mke2fs"
