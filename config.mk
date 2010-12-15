@@ -12,7 +12,7 @@ android_sysbase_modules := \
 	libm \
 	libstdc++ \
 	linker \
-	sh \
+	ash \
 	toolbox \
 	logcat \
 	gdbserver \

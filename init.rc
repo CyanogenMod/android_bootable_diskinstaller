@@ -4,6 +4,7 @@ on init
     export ANDROID_DATA /data
 
     symlink /system/etc /etc
+    symlink /system/bin/ash /system/bin/sh
 
     mkdir /data
     mkdir /cache
