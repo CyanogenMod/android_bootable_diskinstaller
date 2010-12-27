@@ -247,7 +247,9 @@ process_image_node(cnode *img, struct disk_info *dinfo, int test)
             goto fail;
         }
 
-        if (!strcmp(tmp, "ext2"))
+        if (!strcmp(tmp, "ext4"))
+            journal_opts = "";
+        else if (!strcmp(tmp, "ext2"))
             journal_opts = "";
         else if (!strcmp(tmp, "ext3"))
             journal_opts = "-j";
@@ -313,6 +315,8 @@ process_image_node(cnode *img, struct disk_info *dinfo, int test)
         type = INSTALL_IMAGE_EXT2;
     } else if (!strcmp(tmp, "ext3")) {
         type = INSTALL_IMAGE_EXT3;
+    } else if (!strcmp(tmp, "ext4")) {
+        type = INSTALL_IMAGE_EXT4;
     } else {
         LOGE("Unknown image type '%s' for image %s", tmp, img->name);
         goto fail;
@@ -345,6 +349,9 @@ process_image_node(cnode *img, struct disk_info *dinfo, int test)
             }
             /* ...fall through... */
 
+        case INSTALL_IMAGE_EXT4:
+            /* fallthru */
+
         case INSTALL_IMAGE_EXT2:
             if (process_ext2_image(dest_part, filename, flags, test))
                 goto fail;
@@ -371,7 +378,7 @@ main(int argc, char *argv[])
     char *inst_conf_file = "/system/etc/installer.conf";
     char *inst_data_dir = "/data";
     char *inst_data_dev = NULL;
-    char *data_fstype = "ext2";
+    char *data_fstype = "ext4";
     cnode *config;
     cnode *images;
     cnode *img;

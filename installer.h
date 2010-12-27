@@ -24,6 +24,7 @@
 #define INSTALL_IMAGE_RAW          1
 #define INSTALL_IMAGE_EXT2         2
 #define INSTALL_IMAGE_EXT3         3
+#define INSTALL_IMAGE_EXT4         4
 #define INSTALL_IMAGE_TARGZ        10
 
 
