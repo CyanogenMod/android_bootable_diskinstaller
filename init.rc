@@ -1,3 +1,6 @@
+on early-init
+    start ueventd
+
 on init
     export PATH /sbin:/system/sbin:/system/bin
     export ANDROID_ROOT /system
@@ -10,15 +13,15 @@ on init
     mkdir /cache
     mount /tmp /tmp tmpfs
 
-# mount the installer needed partitions
-#    mount ext2 /dev/block/sdb2 /data ro
-
 on boot
     ifup lo
     hostname localhost
     domainname localdomain
 
     class_start default
+
+service ueventd /sbin/ueventd
+    critical
 
 service installer /system/bin/installer -p /dev/block/sdb2
     console
