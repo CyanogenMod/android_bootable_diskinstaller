@@ -136,12 +136,24 @@ $(installer_tmp_img): $(MKEXT2IMG) $(internal_installerimage_files)
 ######################################################################
 # Now make a data image that contains all the target image files for the
 # installer.
+
 bootldr_bin := $(PRODUCT_OUT)/grub/grub.bin
 installer_target_data_files := \
 	$(INSTALLED_BOOTIMAGE_TARGET) \
 	$(INSTALLED_SYSTEMIMAGE) \
 	$(INSTALLED_USERDATAIMAGE_TARGET) \
 	$(bootldr_bin)
+
+# $(1): src directory
+# $(2): output file
+# $(3): mount point
+# $(4): ext variant (ext2, ext3, ext4)
+# $(5): size of the partition
+define build-installerimage-ext-target
+  @mkdir -p $(dir $(2))
+    $(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$(PATH) \
+          $(MKEXTUSERIMG) $(1) $(2) $(4) $(3) $(5)
+endef
 
 installer_data_img := $(TARGET_INSTALLER_OUT)/installer_data.img
 $(installer_data_img): $(diskinstaller_root)/config.mk \
@@ -157,8 +169,8 @@ $(installer_data_img): $(diskinstaller_root)/config.mk \
 		$(TARGET_INSTALLER_OUT)/data/system.img
 	cp -f $(INSTALLED_USERDATAIMAGE_TARGET) \
 		$(TARGET_INSTALLER_OUT)/data/userdata.img
-	$(call build-userimage-ext2-target,$(TARGET_INSTALLER_OUT)/data,$@,\
-		inst_data,)
+	$(call build-installerimage-ext-target,$(TARGET_INSTALLER_OUT)/data,$@, \
+		inst_data,ext4,$(BOARD_INSTALLERIMAGE_PARTITION_SIZE))
 	@echo --- Finished installer data image -[ $@ ]-
 
 ######################################################################
