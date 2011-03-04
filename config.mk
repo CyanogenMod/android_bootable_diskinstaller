@@ -188,11 +188,30 @@ $(INSTALLED_DISKINSTALLERIMAGE_TARGET): \
 					$(installer_layout)
 	@echo "Creating bootable installer image: $@"
 	@rm -f $@
-	@cat $(grub_bin) > $@
-	@$(edit_mbr) -l $(installer_layout) -i $@ \
+	$(hide) cat $(grub_bin) > $@
+	$(hide) $(edit_mbr) -l $(installer_layout) -i $@ \
 		inst_boot=$(installer_tmp_img) \
 		inst_data=$(installer_data_img)
 	@echo "Done with bootable installer image -[ $@ ]-"
+
+# Ditto for the android_disk image
+INSTALLED_ANDROIDIMAGE_TARGET := $(PRODUCT_OUT)/android_disk.img
+android_layout := $(diskinstaller_root)/android_img_layout.conf
+$(INSTALLED_ANDROIDIMAGE_TARGET): \
+					$(INSTALLED_SYSTEMIMAGE) \
+					$(INSTALLED_USERDATAIMAGE_TARGET) \
+					$(INSTALLED_BOOTIMAGE_TARGET) \
+					$(grub_bin) \
+					$(edit_mbr) \
+					$(android_layout)
+	@echo "Creating bootable android disk image: $@"
+	@rm -f $@
+	$(hide) cat $(grub_bin) > $@
+	$(hide) $(edit_mbr) -l $(android_layout) -i $@ \
+		inst_boot=$(INSTALLED_BOOTIMAGE_TARGET) \
+		inst_system=$(INSTALLED_SYSTEMIMAGE) \
+		inst_data=$(INSTALLED_USERDATAIMAGE_TARGET)
+	@echo "Done with bootable android disk image -[ $@ ]-"
 
 
 ######################################################################
@@ -204,17 +223,32 @@ virtual_box_manager_options := convertfromraw
 
 $(INSTALLED_VBOXINSTALLERIMAGE_TARGET): $(INSTALLED_DISKINSTALLERIMAGE_TARGET)
 	@rm -f $(INSTALLED_VBOXINSTALLERIMAGE_TARGET)
-	@$(virtual_box_manager) $(virtual_box_manager_options) $(INSTALLED_DISKINSTALLERIMAGE_TARGET) $(INSTALLED_VBOXINSTALLERIMAGE_TARGET)
+	$(hide) $(virtual_box_manager) $(virtual_box_manager_options) $(INSTALLED_DISKINSTALLERIMAGE_TARGET) $(INSTALLED_VBOXINSTALLERIMAGE_TARGET)
 	@echo "Done with VirtualBox bootable installer image -[ $@ ]-"
 
-else  # ! TARGET_USE_DISKINSTALLER
-INSTALLED_DISKINSTALLERIMAGE_TARGET :=
-INSTALLED_VBOXINSTALLERIMAGE_TARGET :=
-endif
-endif # TARGET_ARCH == x86
+# Ditto for the android_disk image
+INSTALLED_VBOXDISKIMAGE_TARGET := $(PRODUCT_OUT)/android_disk.vdi
+$(INSTALLED_VBOXDISKIMAGE_TARGET): $(INSTALLED_ANDROIDIMAGE_TARGET)
+	@rm -f $(INSTALLED_VBOXDISKIMAGE_TARGET)
+	$(hide) $(virtual_box_manager) $(virtual_box_manager_options) $(INSTALLED_ANDROIDIMAGE_TARGET) $(INSTALLED_VBOXDISKIMAGE_TARGET)
+	@echo "Done with VirtualBox bootable disk image -[ $@ ]-"
+
 
 .PHONY: installer_img
 installer_img: $(INSTALLED_DISKINSTALLERIMAGE_TARGET)
 
 .PHONY: installer_vdi
 installer_vdi: $(INSTALLED_VBOXINSTALLERIMAGE_TARGET)
+
+.PHONY: android_disk_img
+android_disk_img: $(INSTALLED_ANDROIDIMAGE_TARGET)
+
+.PHONY: android_disk_vdi
+android_disk_vdi: $(INSTALLED_VBOXDISKIMAGE_TARGET)
+
+
+else  # ! TARGET_USE_DISKINSTALLER
+INSTALLED_DISKINSTALLERIMAGE_TARGET :=
+INSTALLED_VBOXINSTALLERIMAGE_TARGET :=
+endif
+endif # TARGET_ARCH == x86
