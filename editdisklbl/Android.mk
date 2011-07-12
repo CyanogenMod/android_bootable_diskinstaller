@@ -2,7 +2,6 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-ifneq ($(TARGET_SIMULATOR),true)
 ifeq ($(TARGET_ARCH),x86)
 
 LOCAL_SRC_FILES := \
@@ -20,4 +19,3 @@ LOCAL_MODULE_TAGS := eng
 include $(BUILD_HOST_EXECUTABLE)
 
 endif   # TARGET_ARCH == x86
-endif   # !TARGET_SIMULATOR
