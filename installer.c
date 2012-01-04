@@ -102,15 +102,15 @@ exec_cmd(const char *cmd, ...) /* const char *arg, ...) */
     }
     va_end(ap);
 
-    LOGI("Executing: %s", outbuf);
+    ALOGI("Executing: %s", outbuf);
     rv = system(outbuf);
     free(outbuf);
     if (rv < 0) {
-        LOGI("Error while trying to execute '%s'", cmd);
+        ALOGI("Error while trying to execute '%s'", cmd);
         return -1;
     }
     rv = WEXITSTATUS(rv);
-    LOGI("Done executing %s (%d)", outbuf, rv);
+    ALOGI("Done executing %s (%d)", outbuf, rv);
     return rv;
 }
 
@@ -122,7 +122,7 @@ do_fsck(const char *dst, int force)
     const char *opts = force ? "-fy" : "-y";
 
 
-    LOGI("Running e2fsck... (force=%d) This MAY take a while.", force);
+    ALOGI("Running e2fsck... (force=%d) This MAY take a while.", force);
     if ((rv = exec_cmd(E2FSCK_BIN, "-C 0", opts, dst, NULL)) < 0)
         return 1;
     if (rv >= 4) {
@@ -130,7 +130,7 @@ do_fsck(const char *dst, int force)
         return 1;
     }
     sync();
-    LOGI("e2fsck succeeded (exit code: %d)", rv);
+    ALOGI("e2fsck succeeded (exit code: %d)", rv);
 
     return 0;
 }
@@ -418,10 +418,10 @@ main(int argc, char *argv[])
     if (inst_data_dev && !dump) {
         struct stat filestat;
 
-        LOGI("Waiting for device: %s", inst_data_dev);
+        ALOGI("Waiting for device: %s", inst_data_dev);
         while (stat(inst_data_dev, &filestat))
             sleep(1);
-        LOGI("Device %s ready", inst_data_dev);
+        ALOGI("Device %s ready", inst_data_dev);
         if (mount(inst_data_dev, inst_data_dir, data_fstype, MS_RDONLY, NULL)) {
             LOGE("Could not mount %s on %s as %s", inst_data_dev, inst_data_dir,
                  data_fstype);
@@ -481,7 +481,7 @@ main(int argc, char *argv[])
     if (apply_disk_config(device_disk_info, test))
         return 1;
 
-    LOGI("Done processing installer config. Configured %d images", cnt);
-    LOGI("Type 'reboot' or reset to run new image");
+    ALOGI("Done processing installer config. Configured %d images", cnt);
+    ALOGI("Type 'reboot' or reset to run new image");
     return 0;
 }
