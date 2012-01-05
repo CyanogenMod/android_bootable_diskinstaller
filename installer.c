@@ -344,7 +344,7 @@ process_image_node(cnode *img, struct disk_info *dinfo, int test)
         case INSTALL_IMAGE_EXT3:
             /* makes the error checking in the imager function easier */
             if (flags & INSTALL_FLAG_ADDJOURNAL) {
-                LOGW("addjournal flag is meaningless for ext3 images");
+                ALOGW("addjournal flag is meaningless for ext3 images");
                 flags &= ~INSTALL_FLAG_ADDJOURNAL;
             }
             /* ...fall through... */
