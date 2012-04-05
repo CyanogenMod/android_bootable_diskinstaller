@@ -7,9 +7,6 @@ ifeq ($(TARGET_ARCH),x86)
 LOCAL_SRC_FILES := \
 	editdisklbl.c
 
-LOCAL_C_INCLUDES := \
-	$(LOCAL_PATH)/../libdiskconfig
-
 LOCAL_CFLAGS := -O2 -g -W -Wall -Werror
 
 LOCAL_MODULE := editdisklbl
