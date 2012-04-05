@@ -240,6 +240,8 @@ INSTALLED_VBOX_INSTALLER_IMAGE_TARGET := $(PRODUCT_OUT)/installer.vdi
 virtual_box_manager := VBoxManage
 # hrd-code the UUID so we don't have to release the disk manually in the VirtualBox manager.
 virtual_box_manager_options := convertfromraw --format VDI
+virtual_box_manager_system_disk_ptions := --uuid "{aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa}"
+virtual_box_manager_data_disk_ptions   := --uuid "{bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb}"
 
 $(INSTALLED_VBOX_INSTALLER_IMAGE_TARGET): $(INSTALLED_DISK_INSTALLER_IMAGE_TARGET)
 	@rm -f $(INSTALLED_VBOX_INSTALLER_IMAGE_TARGET)
@@ -253,13 +255,19 @@ $(INSTALLED_VBOX_INSTALLER_IMAGE_TARGET): $(INSTALLED_DISK_INSTALLER_IMAGE_TARGE
 INSTALLED_VBOX_SYSTEM_DISK_IMAGE_TARGET := $(PRODUCT_OUT)/android_system_disk.vdi
 $(INSTALLED_VBOX_SYSTEM_DISK_IMAGE_TARGET): $(INSTALLED_ANDROID_IMAGE_SYSTEM_TARGET)
 	@rm -f $@
-	$(hide) $(virtual_box_manager) $(virtual_box_manager_options) $^ $@
+	$(hide) $(virtual_box_manager) \
+		$(virtual_box_manager_options) \
+		$(virtual_box_manager_system_disk_ptions) \
+		$^ $@
 	@echo "Done with VirtualBox bootable system-disk image -[ $@ ]-"
 
 INSTALLED_VBOX_DATA_DISK_IMAGE_TARGET := $(PRODUCT_OUT)/android_data_disk.vdi
 $(INSTALLED_VBOX_DATA_DISK_IMAGE_TARGET): $(INSTALLED_ANDROID_IMAGE_DATA_TARGET)
 	@rm -f $@
-	$(hide) $(virtual_box_manager) $(virtual_box_manager_options) $^ $@
+	$(hide) $(virtual_box_manager) \
+		$(virtual_box_manager_options) \
+		$(virtual_box_manager_data_disk_ptions) \
+		$^ $@
 	@echo "Done with VirtualBox bootable data-disk image -[ $@ ]-"
 
 .PHONY: installer_img
