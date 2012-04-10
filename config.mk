@@ -227,7 +227,8 @@ $(INSTALLED_ANDROID_IMAGE_DATA_TARGET): \
 	@rm -f $@
 	$(hide) cat $(grub_bin) > $@
 	$(hide) $(edit_mbr) -l $(android_data_layout) -i $@ \
-		inst_data=$(INSTALLED_USERDATAIMAGE_TARGET)
+		inst_data=$(INSTALLED_USERDATAIMAGE_TARGET) \
+		inst_cache=$(INSTALLED_CACHEIMAGE_TARGET)
 	@echo "Done with bootable android data-disk image -[ $@ ]-"
 
 
