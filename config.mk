@@ -220,6 +220,7 @@ $(INSTALLED_ANDROID_IMAGE_SYSTEM_TARGET): \
 
 $(INSTALLED_ANDROID_IMAGE_DATA_TARGET): \
 					$(INSTALLED_USERDATAIMAGE_TARGET) \
+					$(INSTALLED_CACHEIMAGE_TARGET) \
 					$(grub_bin) \
 					$(edit_mbr) \
 					$(android_data_layout)
